@@ -1,10 +1,12 @@
 import glob
 from abc import ABC
+import numpy as np
 import pandas as pd
 from .epic_record import EpicVideoRecord
 import torch.utils.data as data
 from PIL import Image
 import os
+
 import os.path
 from utils.logger import logger
 
@@ -85,7 +87,19 @@ class EpicKitchensDataset(data.Dataset, ABC):
         # Remember that the returned array should have size              #
         #           num_clip x num_frames_per_clip                       #
         ##################################################################
-        raise NotImplementedError("You should implement _get_val_indices")
+        
+        ##################################################################
+        #Th is function should return a list of indices representing the frames to be sampled from the video for validation/testing.
+        # Args:
+        #     record: An object containing video metadata, including the total number of frames.
+        # Returns:
+        #     A list of integers where each integer represents a frame index to be sampled.
+        ##################################################################
+        
+        total_frames = record.num_frames
+        indices = np.linspace(0, total_frames, self.num_clips * self.num_frames_per_clip, endpoint=False, dtype=int)
+    
+        return indices
 
     def __getitem__(self, index):
 
